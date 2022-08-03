@@ -1,23 +1,31 @@
 # SkyTiles
 
-***Purpose***: Extract tiles for a specific SB observation.
+#### Purpose : Extract tiles for a specific SB observation.
 
-Definitions of Content: 
+#### Definitions of Content: 
 
-Two Pythong Scripts: *PyMapSkyTiles.py* and *PyTiling.py*. The former is used for extracting tile locations and IDs for a specific SB, and outputs the csv file needed for tiling. The csv file contains CRPIX1/2 values. The latter, is the actual script for generating the tile images and the corresponding header files.   
+	PyMapSkyTiles.py : Used for extracting tile locations and IDs for a specific SB, and outputs the csv file 
+	                     needed for tiling. The csv file contains CRPIX1/2 values.  
 
-Config Json files: *Config_SkyMapTiles.json* and *Config_Tiling.json*. The former is the input to PyMapSkyTiles.py and the latter to PyTiling.py. With these Json files, you are able to specify the path and filenames to i) footprints, ii) images, and iii) csv files, also provide tile parameters such as size (naxis), image sample size (cdelt), Healpix nside, etc.   
+	PyTiling.py      : The actual script for generating the tile images and the corresponding header files.   
+	
+	Config_SkyMapTiles.json: Input to PyMapSkyTiles.py.  
+	
+	Config_Tiling.json : Input to PyTiling.py.   
+	
+	NB: With these Json files, you are able to specify the path and filenames to i) footprints, ii)   
+	images, and iii) csv files, also provide tile parameters such as size (naxis), image sample size (cdelt),  
+	Healpix nside, etc.   
 
-The script are executed as follows:
+#### The scripts are executed as follows:
 	
 	
 							#./PyMapSkyTiles.py -j Config_SkyMapTiles.py
 							
 							#./PyTiling.py -j Config_Tiling.py
 							
-***Config_SkyMapTiles.json*** 
 
-Input Json Definitions:
+#### Config_SkyMapTiles.json input Json Definitions:
 
 	path_footprints   : Path to footprints.
     run_all_footprints: true/false. If true, look inside path_footprints and extract Tile information for all footprints. 
@@ -40,9 +48,7 @@ Input Json Definitions:
 		name takes the form: 'output_prefix_TileRepeat_SBID.csv'.
 									  
 
-***Config_Tiling.json***
-
-Input Json Definitions:
+#### Config_Tiling.json input Json Definitions:
 
 	input_image: Information about the input image. Insert path and name (below).
          path: 
