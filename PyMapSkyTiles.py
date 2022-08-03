@@ -303,6 +303,7 @@ if __name__ == "__main__":
 
     for i in range(len(HPX_ID)):        
     
+        print(footprints_ID[i])
         tile_output_filename = outfile_json_prefix + '-TileConfig-%s.xlsx'%footprints_ID[i]
         csv_tile_output =  outfile_json_prefix + '-TileConfig-%s.csv'%footprints_ID[i]
         

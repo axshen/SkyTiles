@@ -4,7 +4,7 @@
      },   
     "input_tile_config": {
         "path": null,
-        "SB_tile":"PoSSUM-TileConfig_-2156-54.csv"
+        "SB_tile":"PoSSUM-TileConfig-2156-54.csv"
     },
     "output_tile": {
         "path" : "footprints/possum/10040/",
