@@ -204,7 +204,6 @@ if __name__ == "__main__":
     
     for i, (ra, dec) in enumerate(zip(CRPIX_RA, CRPIX_DEC)):
     
-    
         header =   Tile_Header_Cube(ra, dec, cdelt, naxis, CRVAL_RA[i], CRVAL_DEC[i])
         header_output_file = outdir_tile + '%s-%s-header-%d.hdr'%(outprefix_fitstiles,SB_ID, healpix_pixels[i])
     
@@ -215,7 +214,7 @@ if __name__ == "__main__":
         
         if no_of_frequencies == 1:
             output_file = outdir_tile + '%s-%s-tile-%d.fits'%(outprefix_fitstiles, SB_ID, healpix_pixels[i])
-            execute_string = 'mProjectQL %s %s %s -f'%(image_file, output_file, header_file.name)
+            execute_string = 'mProject %s %s %s -f'%(image_file, output_file, header_file.name)
             os.system(execute_string)
             print(execute_string)
             
