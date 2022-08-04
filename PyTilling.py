@@ -85,6 +85,39 @@ def Tile_Header_Cube(ra_pixel, dec_pixel, cdelt, naxis, crval_ra, crval_dec):
 
 
 
+def edit_data_header(fits_data, header):
+
+    """ Edit the header and reduce the data for situations where the 
+    input image has four axis (naxis)."""
+
+    ctype3 = header['CTYPE3']
+    ctype4 = header['CTYPE4']
+
+
+    new_header = header.copy()
+    new_header['naxis'] = 3
+
+    if ctype4 == 'FREQ':
+        new_header['ctype3'] = ctype4
+        new_header['crval3'] = header['crval4']
+        new_header['cunit3'] = header['cunit4']
+        new_header['crpix3'] = header['crpix4']
+        new_header['naxis3'] = header['naxis4']
+
+        new_header['ctype4'] = ctype3
+        new_header['crval4'] = header['crval3']
+        new_header['cunit4'] = header['cunit3']
+        new_header['crpix4'] = header['crpix3']
+        fits_data = fits_data[:, 0, ...]
+        new_header.remove('naxis4')
+
+    if ctype3 == 'FREQ':
+        fits_data = fits_data[0, ...]
+        new_header.remove('naxis4')
+
+    return fits_data, new_header
+
+
 if __name__ == "__main__":
     
     parser = argparse.ArgumentParser("Generate tiles for a specfic SB.")
@@ -102,9 +135,10 @@ if __name__ == "__main__":
     image_name = input_image['name']
     image_file = fits_path + image_name
 
+    # open the fits file.
     image  =  fits.open(image_file)
     fits_header = image[0].header
-    
+    fits_naxis = fits_header['naxis']
 
     global freq_name, freq_cval, freq_cdelt, freq_cpix, freq_unit, stokes_name, stokes_cval, stokes_cpix,\
         stokes_cdelt, no_of_frequencies, bmaj, bmin, bpa
@@ -112,8 +146,8 @@ if __name__ == "__main__":
 
     bmaj = fits_header['BMAJ']
     bmin = fits_header['BMIN']
-    bpa = fits_header['BPA']
-    
+    bpa  = fits_header['BPA']
+   
     ctype3 = fits_header['ctype3']
     crval3 = fits_header['crval3']
     cdelt3 = fits_header['cdelt3']
@@ -161,12 +195,19 @@ if __name__ == "__main__":
 
     if stokes_cval == 1.0:
         outprefix_fitstiles = outprefix_fitstiles + '-I'
+        stokes = 'I'
+        
     if stokes_cval == 2.0: 
         outprefix_fitstiles = outprefix_fitstiles + '-Q'
+        stokes = 'Q'
+        
     if stokes_cval == 3.0:
         outprefix_fitstiles = outprefix_fitstiles + '-U'
+        stokes = 'U'
+        
     if stokes_cval == 4.0: 
         outprefix_fitstiles = outprefix_fitstiles + '-V'
+        stokes = 'V'
 
 
     data_excel = tile_config['input_tile_config']
@@ -198,30 +239,48 @@ if __name__ == "__main__":
     
 
     if no_of_frequencies == 1:
-        print('Image provided has 1 channel, so it will be treated as an MFS.')
+        print('>>> Image provided has 1 channel, so it will be treated as an MFS, projected using mProject.')
     if no_of_frequencies > 1:
-        print('Image cube provided. The image will be processed using mprojectCube')
+        print('>>> You provided an image CUBE. It will be processed using mprojectCube')
+    
+    # fix situations where the input image has 4 axis. Montage is unable 
+    # to deal with such situations.
+    if fits_naxis > 3: 
+            
+        print('>>> The input image data has %d number of axis. This will cause problems with Montage. '
+                  'We going to attempt to reduce the image to 3D: (ra, dec,frequency).'%fits_naxis)
+            
+        newfits_data, newfits_hdr = edit_data_header(image[0].data, fits_header)
+        tempfits_file = fits_path + 'temp-%s-%s.fits'%(SB_ID, stokes)
+        fits.writeto(tempfits_file, newfits_data, newfits_hdr, overwrite=True)
+            
+        # set the image file to be the temporary file
+        image_file = tempfits_file
     
     for i, (ra, dec) in enumerate(zip(CRPIX_RA, CRPIX_DEC)):
+    
     
         header =   Tile_Header_Cube(ra, dec, cdelt, naxis, CRVAL_RA[i], CRVAL_DEC[i])
         header_output_file = outdir_tile + '%s-%s-header-%d.hdr'%(outprefix_fitstiles,SB_ID, healpix_pixels[i])
     
         header_file = open(header_output_file, 'w')
         header_file.write(str(header))
-    
         header_file.close()
         
+           
         if no_of_frequencies == 1:
+            
             output_file = outdir_tile + '%s-%s-tile-%d.fits'%(outprefix_fitstiles, SB_ID, healpix_pixels[i])
             execute_string = 'mProject %s %s %s -f'%(image_file, output_file, header_file.name)
             os.system(execute_string)
             print(execute_string)
-            
+              
         if no_of_frequencies > 1:
             output_file = outdir_tile + '%s-%s-tile-%d.fits'%(outprefix_fitstiles, SB_ID, healpix_pixels[i])
             execute_string = 'mProjectCube %s %s %s -f'%(image_file, output_file, header_file.name)
             os.system(execute_string)
             print(execute_string)
-            
-            
+                   
+        
+    if fits_naxis > 3:
+        os.system('rm -rf %s'%tempfits_file)
