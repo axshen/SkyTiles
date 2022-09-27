@@ -69,5 +69,16 @@
 			The stokes parameter is obtained from the input fits header with crval3/4: 1 is I,
 			2 is Q, 3 is U and 4 is V.
 
+## Notes
 
+Config_SkyMapTiles.json
 
+- which of the configuration items does not change between different SB files?
+
+Config_Tiling.json
+
+- remove naxis and cdelt out of this file since they are (possibly) constant for each of the tile files.
+- run `PyTiling.py` with three arguments from config
+    - `-i` full input image path
+    - `-c` full tile config path
+    - `-o` output tile path
