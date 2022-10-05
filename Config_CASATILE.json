@@ -1,0 +1,20 @@
+{ "input_image": {
+        "path": "./",
+        "name": "image.restored.i.SB10040-Single.fits"
+     },   
+    "input_tile": {
+        "path": "./",
+        "csv_name":"PoSSUM_2156-54.csv"
+    
+    },
+    "tile_template": {
+        "path": "./",
+        "name":"tile-template.fits"
+    
+    },
+    "outputs": {
+        "path" : "tiles/MFS/",
+        "naxis": 2048,
+        "tile_prefix": "PoSSUM"
+   }
+}
