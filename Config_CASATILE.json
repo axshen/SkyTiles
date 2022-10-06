@@ -1,10 +1,5 @@
 {
-    "image": "/mnt/shared/home/ashen/POSSUM/data/3chan/image.restored.i.SB10040.contcube_3chan.fits",
-    "tiling_map": "/mnt/shared/home/ashen/POSSUM/development/SkyTiles/PoSSUM_2156-54.csv",
     "tile_template": "/mnt/shared/home/ashen/POSSUM/development/SkyTiles/tile-template.fits",
-    "outputs": {
-        "path" : "/mnt/shared/home/ashen/POSSUM/development/SkyTiles/tiles/",
-        "naxis": 2048,
-        "tile_prefix": "PoSSUM"
-   }
+    "naxis": 2048,
+    "tile_prefix": "PoSSUM"
 }

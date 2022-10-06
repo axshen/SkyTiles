@@ -12,19 +12,31 @@ from casatasks import imhead, imregrid, exportfits
 
 
 def main(argv):
+    """Run with the following command:
+
+        python pyCASATILE.py
+            -i <image_cube>
+            -m <tile_map>
+            -o <output_dir>
+            -j <json_config>
+
+    """
     # Load configuration
     parser = argparse.ArgumentParser("Generate tiles for a specfic SB.")
-    parser.add_argument("-j", dest="json", help="The JSON configuration file.")
+    parser.add_argument("-i", dest="image", help="Image cube.", required=True)
+    parser.add_argument("-m", dest="map", help="Tiling map for the image cube.", required=True)
+    parser.add_argument("-o", dest="output", help="Output write directory for tiles cubes.", required=True)
+    parser.add_argument("-j", dest="json", help="The default JSON configuration file.", required=True)
     args = parser.parse_args(argv)
     with open(args.json, "r") as read_file:
         tile_config = json.load(read_file)
 
     # Read image, sky tiling map and tile template
-    image = tile_config["image"]
+    image = args.image
     if not os.path.exists(image):
         raise Exception(f"Input image {image} not found.")
 
-    tiling_map = tile_config["tiling_map"]
+    tiling_map = args.map
     if not os.path.exists(tiling_map):
         raise Exception(f"Input sky tiling map {tiling_map} not found.")
 
@@ -33,15 +45,13 @@ def main(argv):
         raise Exception(f"Input tile template {tile_template} not found.")
 
     # Outputs
-    outputs = tile_config["outputs"]
-    naxis = outputs["naxis"]
-    output_prefix = outputs["tile_prefix"]
-    work_dir = outputs["path"]
-    if not os.path.exists(work_dir):
-        os.mkdir(work_dir)
+    naxis = tile_config["naxis"]
+    output_prefix = tile_config["tile_prefix"]
+    if not os.path.exists(args.output):
+        os.mkdir(args.output)
 
     sbid = tiling_map.split("/")[-1].split("_")[-1].split(".")[0]
-    write_dir = os.path.join(work_dir, sbid)
+    write_dir = os.path.join(args.output, sbid)
     if not os.path.exists(write_dir):
         os.mkdir(write_dir)
         logging.info(f"Output directory not found. Creating new directory: {write_dir}")
@@ -97,7 +107,7 @@ def main(argv):
             else:
                 template_header["shap"] = np.array([naxis, naxis, 1])
 
-        outputname = work_dir + "%s-%s-%d.image" % (output_prefix, sbid, pixel_ID[i])
+        outputname = args.output + "%s-%s-%d.image" % (output_prefix, sbid, pixel_ID[i])
 
         # tiling, outputs tile fits in CASA image.
         imregrid(
