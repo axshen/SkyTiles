@@ -11,6 +11,9 @@ import logging
 from casatasks import imhead, imregrid, exportfits
 
 
+logging.basicConfig(level=logging.INFO)
+
+
 def main(argv):
     """Run with the following command:
 
@@ -72,7 +75,11 @@ def main(argv):
     axis = fitsheader["axisnames"]
 
     # Read tile template header
-    template_header = imregrid(imagename=tile_template, template="get")
+    template_header = imregrid(
+        imagename=tile_template,
+        template="get",
+        overwrite=True
+    )
 
     # Starting the tiling.
     start_tiling = time.time()
@@ -116,6 +123,7 @@ def main(argv):
             output=outputname,
             axes=[0, 1],
             interpolation="cubic",
+            overwrite=True,
         )
         # convert casa image to fits image
         one_tile_end = time.time()
@@ -126,7 +134,9 @@ def main(argv):
 
         logging.info("Converting the casa image to fits image.")
         exportfits(
-            imagename=outputname, fitsimage=outputname.split(".image")[0] + ".fits"
+            imagename=outputname,
+            fitsimage=outputname.split(".image")[0] + ".fits",
+            overwrite=True
         )
         # delete all casa image files.
         logging.info("Deleting the casa image. ")
