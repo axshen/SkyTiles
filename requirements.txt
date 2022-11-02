@@ -1,5 +1,6 @@
 astropy==5.0.1
 astropy-healpix==0.6
 pandas==1.4.3
-casatasks==6.5.2.26
 numpy==1.21.2
+casatools==6.5.2.26
+casatasks==6.5.2.26

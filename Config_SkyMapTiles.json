@@ -1,13 +1,13 @@
 {
-    "path_footprints": "/mnt/shared/home/ashen/POSSUM/data/phase2/34120/footprint_files/",
-    "run_all_footprints": true,
-    "footprint_files": "NA",
+    "path_footprints": "/Users/she393/Documents/SkyTiles/evaluation/metadata/",
+    "run_all_footprints": false,
+    "footprint_files": ["footprintOutput-sb10040-POSSUM_2156-54.txt"],
     "HPX_nside": 32,
     "tile_naxis": 2048,
     "tile_cdelt": 0.0009710633897,
     "beam_radius": 1.2,
     "beam_sample_points": 16,
     "number_of_beams": 36,
-    "outfile_prefix": "PoSSUM",
+    "outfile_prefix": "tmp/PoSSUM",
     "generate_ds9regions": true
 }

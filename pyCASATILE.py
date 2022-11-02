@@ -71,10 +71,13 @@ def main(argv):
             crpix1.append(float(row["CRPIX_RA"]))
             crpix2.append(float(row["CRPIX_DEC"]))
 
+    logging.info('Getting header')
     fitsheader = imhead(image)
     axis = fitsheader["axisnames"]
+    logging.info(axis)
 
     # Read tile template header
+    logging.info('Getting regridding template')
     template_header = imregrid(
         imagename=tile_template,
         template="get",
@@ -82,8 +85,10 @@ def main(argv):
     )
 
     # Starting the tiling.
+    logging.info('Tiling')
     start_tiling = time.time()
     for i, (ra, dec) in enumerate(zip(crpix1, crpix2)):
+        logging.info(f"Producing tile {i+1}/{len(crpix1)}")
         one_tile_start = time.time()
 
         # this is how I will update the dictionary
